@@ -1,0 +1,2 @@
+caminhos pra rodar migration
+--project .\BookServices\Adapters\Data.MySql\Data.MySql.csproj --startup-project .\BookServices\Consumers\API\API.csproj

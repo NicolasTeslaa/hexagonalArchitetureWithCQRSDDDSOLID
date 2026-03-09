@@ -1,0 +1,34 @@
+<Solution>
+  <Folder Name="/BookingService/" />
+  <Folder Name="/BookingService/Adapters/">
+    <Project Path="BookServices/Adapters/Data.MySql/Data.MySql.csproj" />
+  </Folder>
+  <Folder Name="/BookingService/Consumers/">
+    <Project Path="BookServices/Consumers/API/API.csproj" />
+  </Folder>
+  <Folder Name="/BookingService/Core/" />
+  <Folder Name="/BookingService/Core/Application/">
+    <Project Path="BookServices/Core/Application/Application/Application.csproj" />
+  </Folder>
+  <Folder Name="/BookingService/Core/Domain/">
+    <Project Path="BookServices/Core/Domain/Domain/Domain.csproj" />
+  </Folder>
+  <Folder Name="/BookingService/Tests/" />
+  <Folder Name="/BookingService/Tests/Adapters/">
+    <Project Path="BookServices/Tests/Adapters/Data.MySQL/Data.MySQLTests.csproj" />
+  </Folder>
+  <Folder Name="/BookingService/Tests/Consumers/">
+    <Project Path="BookServices/Tests/Consumers/APITests/APITests.csproj" />
+  </Folder>
+  <Folder Name="/BookingService/Tests/Core/" />
+  <Folder Name="/BookingService/Tests/Core/Application/">
+    <Project Path="BookServices/Tests/Core/Application/ApplicationTests/ApplicationTests.csproj" />
+  </Folder>
+  <Folder Name="/BookingService/Tests/Core/Domain/">
+    <Project Path="BookServices/Tests/Core/Domain/DomainTests/DomainTests.csproj" />
+  </Folder>
+  <Folder Name="/Documentacao/">
+    <File Path="ExemploMigration.txt" />
+  </Folder>
+  <Folder Name="/PaymentService/" />
+</Solution>

@@ -1,0 +1,17 @@
+/HotelBooking/.vs
+/HotelBooking/BookServices/Adapters/Data.MySql/bin
+/HotelBooking/BookServices/Adapters/Data.MySql/Migrations
+/HotelBooking/BookServices/Adapters/Data.MySql/obj
+/HotelBooking/BookServices/Consumers/API/bin
+/HotelBooking/BookServices/Consumers/API/obj
+/HotelBooking/BookServices/Core/Application/Application/bin
+/HotelBooking/BookServices/Core/Application/Application/obj
+/HotelBooking/BookServices/Core/Domain/Domain/obj
+/HotelBooking/BookServices/Tests/Adapters/Data.MySQL/bin
+/HotelBooking/BookServices/Tests/Adapters/Data.MySQL/obj
+/HotelBooking/BookServices/Tests/Consumers/APITests/bin
+/HotelBooking/BookServices/Tests/Consumers/APITests/obj
+/HotelBooking/BookServices/Tests/Core/Application/ApplicationTests/bin
+/HotelBooking/BookServices/Tests/Core/Application/ApplicationTests/obj
+/HotelBooking/BookServices/Tests/Core/Domain/DomainTests/bin
+/HotelBooking/BookServices/Tests/Core/Domain/DomainTests/obj
