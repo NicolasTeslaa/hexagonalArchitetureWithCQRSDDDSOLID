@@ -2,6 +2,7 @@
 using Application.Guest.Port;
 using Application.Guest.Request;
 using Application.Guest.Responses;
+using Domain.Exceptions;
 using Domain.Ports;
 
 namespace Application.Guest.Services;
@@ -17,7 +18,9 @@ public class GuestManager : IGuestManager
         {
             Domain.Entities.Guest guest = GuestDTO.MapToEntity(request.Data);
 
-            guest.Id = await _guestRepository.AddGuestAsync(guest);
+            await guest.Save(_guestRepository);
+
+            request.Data.Id = guest.Id;
 
             return new GuestResponse
             {
@@ -25,12 +28,48 @@ public class GuestManager : IGuestManager
                 Success = true
             };
         }
+        catch (EmailAlreadyUseException)
+        {
+            return new GuestResponse
+            {
+                Success = false,
+                ErrorCode = ErrorCodes.INVALID_EMAIL,
+                Message = "The provided email is already in use."
+            };
+        }
+        catch (InvalidPersonDocumentIdException)
+        {
+            return new GuestResponse
+            {
+                Success = false,
+                ErrorCode = ErrorCodes.INVALID_PERSON_DOCUMENT_ID,
+                Message = "The provided document id is not valid."
+            };
+        }
+        catch (MissingRequiredInformationException)
+        {
+            return new GuestResponse
+            {
+                Success = false,
+                ErrorCode = ErrorCodes.MISSING_REQUIRED_INFORMATION,
+                Message = "Missing required information."
+            };
+        }
+        catch (InvalidEmailException)
+        {
+            return new GuestResponse
+            {
+                Success = false,
+                ErrorCode = ErrorCodes.INVALID_EMAIL,
+                Message = "The provided email is not valid."
+            };
+        }
         catch (Exception)
         {
             return new GuestResponse
             {
                 Success = false,
-                ErrorCode = ErrorCodes.COULD_NOT_STORE_DATA,
+                ErrorCode = ErrorCodes.UNEXPECTED_ERROR,
                 Message = "Not able to store the guest data. Please try again later."
             };
         }

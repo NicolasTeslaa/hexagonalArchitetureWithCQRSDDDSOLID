@@ -1,5 +1,6 @@
 ﻿using Domain.Entities;
 using Domain.Ports;
+using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -24,6 +25,10 @@ namespace Data.MySql.Repositories
         public Task<bool> DeleteGuestAsync(int id)
         {
             throw new NotImplementedException();
+        }
+        public async Task<bool> FindByEmail(string email)
+        {
+            return await _context.Guest.AnyAsync(g => g.Email == email);
         }
 
         public Task<IEnumerable<Guest>> GetAllGuestsAsync()

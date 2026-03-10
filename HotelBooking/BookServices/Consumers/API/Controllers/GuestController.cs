@@ -1,4 +1,5 @@
-﻿using Application.Guest.DTO;
+﻿using Application;
+using Application.Guest.DTO;
 using Application.Guest.Port;
 using Application.Guest.Request;
 using Application.Guest.Responses;
@@ -20,7 +21,7 @@ namespace API.Controllers
         }
 
         [HttpPost]
-        public async Task<ActionResult<GuestResponse>> Create(GuestDTO guest)
+        public async Task<ActionResult<GuestResponse>> Create([FromBody] GuestDTO guest)
         {
             var request = new CreateGuestRequest
             {
@@ -29,10 +30,21 @@ namespace API.Controllers
 
             var res = await _guestPort.CreateGuest(request);
 
-            if (res.Success) return Created("", res.Data);
+            if (res.Success)
+                return CreatedAtAction(nameof(Create), new { id = res.Data.Id }, res);
 
-            _logger.LogError("Failed to create guest: {ErrorMessage}", res);
-            return BadRequest(500);
+            _logger.LogWarning("Failed to create guest. ErrorCode: {ErrorCode}, Message: {Message}",
+                res.ErrorCode, res.Message);
+
+            return res.ErrorCode switch
+            {
+                ErrorCodes.INVALID_EMAIL => BadRequest(res),
+                ErrorCodes.INVALID_PERSON_DOCUMENT_ID => BadRequest(res),
+                ErrorCodes.MISSING_REQUIRED_INFORMATION => BadRequest(res),
+                ErrorCodes.COULD_NOT_STORE_DATA => StatusCode(StatusCodes.Status500InternalServerError, res),
+                ErrorCodes.UNEXPECTED_ERROR => StatusCode(StatusCodes.Status500InternalServerError, res),
+                _ => StatusCode(StatusCodes.Status500InternalServerError, res)
+            };
         }
     }
 }

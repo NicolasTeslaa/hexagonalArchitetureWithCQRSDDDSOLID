@@ -13,6 +13,9 @@
   <Folder Name="/BookingService/Core/Domain/">
     <Project Path="BookServices/Core/Domain/Domain/Domain.csproj" />
   </Folder>
+  <Folder Name="/BookingService/Core/Shared/">
+    <Project Path="BookServices/Core/Shared/Utils/Utils.csproj" Id="2a64ec30-6d07-4964-bb4f-4d4407b8ccdc" />
+  </Folder>
   <Folder Name="/BookingService/Tests/" />
   <Folder Name="/BookingService/Tests/Adapters/">
     <Project Path="BookServices/Tests/Adapters/Data.MySQL/Data.MySQLTests.csproj" />
