@@ -1,52 +1,45 @@
-﻿using Domain.Entities;
-using Domain.Ports;
+﻿using Domain.Guest.Entities;
+using Domain.Guest.Ports;
 using Microsoft.EntityFrameworkCore;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
-namespace Data.MySql.Repositories
+namespace Data.MySql.Repositories;
+
+public class GuestRepository : IGuestRepository
 {
-    public class GuestRepository : IGuestRepository
+    private readonly HotelDbContext _context;
+    public GuestRepository(HotelDbContext context) => _context = context;
+
+    public async Task<int> AddGuestAsync(Guest guest)
     {
-        private readonly HotelDbContext _context;
+        await _context.Guest.AddAsync(guest);
+        await _context.SaveChangesAsync();
+        return guest.Id;
+    }
 
-        public GuestRepository(HotelDbContext context) => _context = context;
+    public async Task<bool> DeleteGuestAsync(int id)
+    {
+        var guest = await _context.Guest.FirstOrDefaultAsync(g => g.Id == id);
 
-        public async Task<int> AddGuestAsync(Guest guest)
-        {
-            await _context.Guest.AddAsync(guest);
-            await _context.SaveChangesAsync();
-            return guest.Id;
-        }
+        if (guest is null) return false;
 
-        public async Task<bool> DeleteGuestAsync(int id)
-        {
-            var guest = await _context.Guest.FirstOrDefaultAsync(g => g.Id == id);
+        _context.Guest.Remove(guest);
+        await _context.SaveChangesAsync();
 
-            if (guest is null) return false;
+        return true;
+    }
 
-            _context.Guest.Remove(guest);
-            await _context.SaveChangesAsync();
+    public async Task<Guest?> FindByEmail(string email) => await _context.Guest.FirstOrDefaultAsync(g => g.Email == email) ?? null;
 
-            return true;
-        }
+    public async Task<Guest?> FindById(int id) => await _context.Guest.FirstOrDefaultAsync(g => g.Id == id) ?? null;
 
-        public async Task<Guest?> FindByEmail(string email) => await _context.Guest.FirstOrDefaultAsync(g => g.Email == email) ?? null;
+    public async Task<IEnumerable<Guest>> GetAllGuestsAsync() => await _context.Guest.ToListAsync();
 
-        public async Task<Guest?> FindById(int id) => await _context.Guest.FirstOrDefaultAsync(g => g.Id == id) ?? null;
+    public async Task<Guest> GetGuestByIdAsync(int id) => await _context.Guest.FirstOrDefaultAsync(g => g.Id == id) ?? new Guest();
 
-        public async Task<IEnumerable<Guest>> GetAllGuestsAsync() => await _context.Guest.ToListAsync();
-
-        public async Task<Guest> GetGuestByIdAsync(int id) => await _context.Guest.FirstOrDefaultAsync(g => g.Id == id) ?? new Guest();
-
-        public async Task<bool> UpdateGuestAsync(Guest guest)
-        {
-            _context.Guest.Update(guest);
-            await _context.SaveChangesAsync();
-            return true;
-        }
+    public async Task<bool> UpdateGuestAsync(Guest guest)
+    {
+        _context.Guest.Update(guest);
+        await _context.SaveChangesAsync();
+        return true;
     }
 }

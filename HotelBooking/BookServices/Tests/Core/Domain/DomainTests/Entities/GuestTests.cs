@@ -1,7 +1,8 @@
-﻿using Domain.Entities;
-using Domain.Exceptions;
-using Domain.Ports;
-using Domain.ValueObjects;
+﻿using Domain.Exceptions;
+using Domain.Guest.Entities;
+using Domain.Guest.Exceptions;
+using Domain.Guest.Ports;
+using Domain.Guest.ValueObjects;
 using Moq;
 using Xunit;
 

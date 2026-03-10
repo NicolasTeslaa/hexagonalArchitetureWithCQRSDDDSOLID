@@ -1,4 +1,4 @@
-﻿using Domain.ValueObjects;
+﻿using Domain.Room.ValueObjects;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -16,9 +16,9 @@ public class RoomDTO
     public Price Price { get; set; }
     public bool IsAvaliable { get; set; }
 
-    public static Domain.Entities.Room MapToEntity(RoomDTO roomDTO)
+    public static Domain.Room.Entities.Room MapToEntity(RoomDTO roomDTO)
     {
-        return new Domain.Entities.Room
+        return new Domain.Room.Entities.Room
         {
             Id = roomDTO.Id,
             Name = roomDTO.Name,
@@ -28,7 +28,7 @@ public class RoomDTO
         };
     }
 
-    public static RoomDTO MapFromEntity(Domain.Entities.Room room)
+    public static RoomDTO MapFromEntity(Domain.Room.Entities.Room room)
     {
         return new RoomDTO
         {

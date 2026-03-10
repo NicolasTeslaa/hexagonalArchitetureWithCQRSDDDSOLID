@@ -1,4 +1,4 @@
-﻿namespace Domain.Enums;
+﻿namespace Domain.Room.Enums;
 
 public enum AcceptedCurrencies
 {

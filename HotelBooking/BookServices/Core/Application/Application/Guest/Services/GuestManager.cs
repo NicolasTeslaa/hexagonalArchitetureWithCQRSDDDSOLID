@@ -3,7 +3,8 @@ using Application.Guest.Port;
 using Application.Guest.Request;
 using Application.Guest.Responses;
 using Domain.Exceptions;
-using Domain.Ports;
+using Domain.Guest.Exceptions;
+using Domain.Guest.Ports;
 
 namespace Application.Guest.Services;
 
@@ -16,7 +17,7 @@ public class GuestManager : IGuestManager
     {
         try
         {
-            Domain.Entities.Guest guest = GuestDTO.MapToEntity(request.Data);
+            Domain.Guest.Entities.Guest guest = GuestDTO.MapToEntity(request.Data);
 
             await guest.Save(_guestRepository);
 
@@ -81,7 +82,7 @@ public class GuestManager : IGuestManager
 
         try
         {
-            Domain.Entities.Guest? guest = await _guestRepository.FindById(id);
+            Domain.Guest.Entities.Guest? guest = await _guestRepository.FindById(id);
 
             if (guest is null)
             {

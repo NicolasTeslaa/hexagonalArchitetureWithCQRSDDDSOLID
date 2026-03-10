@@ -1,4 +1,4 @@
-﻿namespace Domain.Exceptions;
+﻿namespace Domain.Guest.Exceptions;
 
 public class InvalidPersonDocumentIdException : Exception
 {

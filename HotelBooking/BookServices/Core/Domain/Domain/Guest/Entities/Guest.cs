@@ -1,10 +1,12 @@
-﻿using Domain.Exceptions;
-using Domain.Ports;
-using Domain.ValueObjects;
+﻿using Domain.Book.Entities;
+using Domain.Exceptions;
+using Domain.Guest.Exceptions;
+using Domain.Guest.Ports;
+using Domain.Guest.ValueObjects;
 using System.Collections.ObjectModel;
 using System.Text.Json.Serialization;
 
-namespace Domain.Entities;
+namespace Domain.Guest.Entities;
 
 public class Guest
 {

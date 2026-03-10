@@ -1,7 +1,7 @@
-﻿using Domain.Entities;
-using Domain.Enums;
+﻿using Domain.Book.Entities;
+using Domain.Book.Enums;
 using System.Reflection;
-using Action = Domain.Enums.Action;
+using Action = Domain.Book.Enums.Action;
 
 namespace DomainTests.Entities;
 

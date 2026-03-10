@@ -1,12 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using Application.Room.DTO;
 
-namespace Application.Room.Request
+namespace Application.Room.Request;
+
+public class CreateRoomRequest
 {
-    internal class CreateRoomRequest
-    {
-    }
+    public RoomDTO Data;
 }

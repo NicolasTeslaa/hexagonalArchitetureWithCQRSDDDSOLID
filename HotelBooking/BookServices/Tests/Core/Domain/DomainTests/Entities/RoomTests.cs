@@ -1,8 +1,8 @@
-﻿using Domain.Entities;
-using Domain.Enums;
-using Domain.Exceptions;
-using Domain.Ports;
-using Domain.ValueObjects;
+﻿using Domain.Exceptions;
+using Domain.Room.Entities;
+using Domain.Room.Enums;
+using Domain.Room.Ports;
+using Domain.Room.ValueObjects;
 using Moq;
 using Xunit;
 

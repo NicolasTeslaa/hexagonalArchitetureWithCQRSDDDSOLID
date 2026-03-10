@@ -1,6 +1,10 @@
-﻿using Application.Room.DTO;
+﻿using Application.Guest.Responses;
+using Application.Room.DTO;
 using Application.Room.Port;
-using Domain.Ports;
+using Application.Room.Request;
+using Application.Room.Responses;
+using Domain.Exceptions;
+using Domain.Room.Ports;
 
 namespace Application.Room.Services;
 
@@ -9,13 +13,38 @@ public class RoomManager : IRoomManager
     private readonly IRoomRepository _roomRepository;
     public RoomManager(IRoomRepository roomRepository) => _roomRepository = roomRepository;
 
-    public async Task<int> AddRoomAsync(RoomDTO room)
+    public async Task<RoomResponse> AddRoomAsync(CreateRoomRequest room)
     {
-        var roomEntity = RoomDTO.MapToEntity(room);
+        try
+        {
+            var roomEntity = RoomDTO.MapToEntity(room.Data);
 
-        await roomEntity.Save(_roomRepository);
+            await roomEntity.Save(_roomRepository);
 
-        return roomEntity.Id;
+            return new RoomResponse
+            {
+                Data = room.Data,
+                Success = true
+            };
+        }
+        catch (MissingRequiredInformationException)
+        {
+            return new RoomResponse
+            {
+                Success = false,
+                ErrorCode = ErrorCodes.MISSING_REQUIRED_INFORMATION,
+                Message = "Missing required information."
+            };
+        }
+        catch (Exception)
+        {
+            return new RoomResponse
+            {
+                Success = false,
+                ErrorCode = ErrorCodes.UNEXPECTED_ERROR,
+                Message = "Intern Error."
+            };
+        }
     }
 
     public async Task<bool> DeleteRoomAsync(int id)
@@ -30,13 +59,29 @@ public class RoomManager : IRoomManager
         return list.Select(r => RoomDTO.MapFromEntity(r));
     }
 
-    public async Task<RoomDTO> GetRoomByIdAsync(int id)
+    public async Task<RoomResponse> GetRoomByIdAsync(int id)
     {
-        var roomEntity = _roomRepository.GetRoomByIdAsync(id);
+        var roomEntity = await _roomRepository.GetRoomByIdAsync(id);
 
-        RoomDTO roomDTO = RoomDTO.MapFromEntity(roomEntity.Result);
+        if(roomEntity is null)
+        {
+            return new RoomResponse
+            {
+                Success = false,
+                ErrorCode = ErrorCodes.NOT_FOUND,
+                Message = "Room not found"
+            };
+        }
 
-        return roomDTO;
+        RoomDTO roomDTO = RoomDTO.MapFromEntity(roomEntity);
+
+        RoomResponse response = new RoomResponse
+        {
+            Data = roomDTO,
+            Success = true
+        };
+
+        return response;
     }
 
     public async Task<bool> UpdateRoomAsync(RoomDTO room)

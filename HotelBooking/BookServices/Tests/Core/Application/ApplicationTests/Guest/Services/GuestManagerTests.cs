@@ -3,7 +3,8 @@ using Application.Guest.DTO;
 using Application.Guest.Request;
 using Application.Guest.Responses;
 using Application.Guest.Services;
-using Domain.Ports;
+using Domain.Guest.Ports;
+using Domain.Guest.ValueObjects;
 using Moq;
 
 namespace ApplicationTests.Guest.Services
@@ -36,15 +37,15 @@ namespace ApplicationTests.Guest.Services
         [Fact]
         public async Task GetById_Should_Return_Success_When_Guest_Exists()
         {
-            var guest = new Domain.Entities.Guest
+            var guest = new Domain.Guest.Entities.Guest
             {
                 Id = 15,
                 Name = "Tesla Silva",
                 Email = "tesla@gmail.com",
-                DocumentId = new Domain.ValueObjects.PersonId
+                DocumentId = new Domain.Guest.ValueObjects.PersonId
                 {
                     IdNumber = "12345678901",
-                    Document = (Domain.ValueObjects.DocumentType)1
+                    Document = (DocumentType)1
                 }
             };
 
@@ -70,7 +71,7 @@ namespace ApplicationTests.Guest.Services
         {
             _guestRepositoryMock
                 .Setup(r => r.FindById(15))
-                .ReturnsAsync((Domain.Entities.Guest?)null);
+                .ReturnsAsync((Domain.Guest.Entities.Guest?)null);
 
             GuestResponse response = await _guestManager.GetById(15);
 
@@ -104,10 +105,10 @@ namespace ApplicationTests.Guest.Services
 
             _guestRepositoryMock
                 .Setup(r => r.FindByEmail(request.Data.Email))
-                .ReturnsAsync((Domain.Entities.Guest?)null);
+                .ReturnsAsync((Domain.Guest.Entities.Guest?)null);
 
             _guestRepositoryMock
-                .Setup(r => r.AddGuestAsync(It.IsAny<Domain.Entities.Guest>()))
+                .Setup(r => r.AddGuestAsync(It.IsAny<Domain.Guest.Entities.Guest>()))
                 .ReturnsAsync(15);
 
             GuestResponse response = await _guestManager.CreateGuest(request);
@@ -119,7 +120,7 @@ namespace ApplicationTests.Guest.Services
             Assert.Equal(request.Data.Name, response.Data.Name);
 
             _guestRepositoryMock.Verify(r => r.FindByEmail(request.Data.Email), Times.Once);
-            _guestRepositoryMock.Verify(r => r.AddGuestAsync(It.IsAny<Domain.Entities.Guest>()), Times.Once);
+            _guestRepositoryMock.Verify(r => r.AddGuestAsync(It.IsAny<Domain.Guest.Entities.Guest>()), Times.Once);
         }
 
         [Fact]
@@ -129,7 +130,7 @@ namespace ApplicationTests.Guest.Services
 
             _guestRepositoryMock
                 .Setup(r => r.FindByEmail(request.Data.Email))
-                .ReturnsAsync(new Domain.Entities.Guest
+                .ReturnsAsync(new Domain.Guest.Entities.Guest
                 {
                     Id = 99,
                     Name = "Existing Guest",
@@ -143,7 +144,7 @@ namespace ApplicationTests.Guest.Services
             Assert.Equal("The provided email is already in use.", response.Message);
 
             _guestRepositoryMock.Verify(r => r.FindByEmail(request.Data.Email), Times.Once);
-            _guestRepositoryMock.Verify(r => r.AddGuestAsync(It.IsAny<Domain.Entities.Guest>()), Times.Never);
+            _guestRepositoryMock.Verify(r => r.AddGuestAsync(It.IsAny<Domain.Guest.Entities.Guest>()), Times.Never);
         }
 
         [Fact]
@@ -159,7 +160,7 @@ namespace ApplicationTests.Guest.Services
             Assert.Equal("The provided document id is not valid.", response.Message);
 
             _guestRepositoryMock.Verify(r => r.FindByEmail(It.IsAny<string>()), Times.Never);
-            _guestRepositoryMock.Verify(r => r.AddGuestAsync(It.IsAny<Domain.Entities.Guest>()), Times.Never);
+            _guestRepositoryMock.Verify(r => r.AddGuestAsync(It.IsAny<Domain.Guest.Entities.Guest>()), Times.Never);
         }
 
         [Fact]

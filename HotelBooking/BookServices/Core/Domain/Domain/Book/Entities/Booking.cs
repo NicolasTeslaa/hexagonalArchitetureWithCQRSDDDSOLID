@@ -1,7 +1,7 @@
-﻿using Domain.Enums;
-using Action = Domain.Enums.Action;
+﻿using Domain.Book.Enums;
+using Action = Domain.Book.Enums.Action;
 
-namespace Domain.Entities;
+namespace Domain.Book.Entities;
 
 public class Booking
 {
@@ -10,8 +10,8 @@ public class Booking
     public DateTime Start { get; set; }
     public DateTime End { get; set; }
     private Status Status { get; set; }
-    public Room Room { get; set; }
-    public Guest Guest { get; set;  }
+    public Domain.Room.Entities.Room Room { get; set; }
+    public Domain.Guest.Entities.Guest Guest { get; set;  }
     public Status CurrentStatus { get { return this.Status;  } }
 
     public void ChangeState(Action action)

@@ -1,7 +1,7 @@
 ﻿using Data.MySql;
 using Data.MySql.Repositories;
-using Domain.Entities;
-using Domain.Enums;
+using Domain.Room.Entities;
+using Domain.Room.Enums;
 using Microsoft.EntityFrameworkCore;
 
 namespace Data.MySQL;
@@ -30,7 +30,7 @@ public class RoomRepositoryTests
             Name = name,
             Level = level,
             InMaintenance = inMaintenance,
-            Price = new Domain.ValueObjects.Price()
+            Price = new Domain.Room.ValueObjects.Price()
             {
                 Value = priceValue,
                 Currency = AcceptedCurrencies.Dollars
@@ -89,9 +89,7 @@ public class RoomRepositoryTests
         var result = await repository.GetRoomByIdAsync(999);
 
         // Assert
-        Assert.NotNull(result);
-        Assert.Equal(0, result.Id);
-        Assert.Null(result.Name);
+        Assert.Null(result);
     }
 
     [Fact]
@@ -133,7 +131,7 @@ public class RoomRepositoryTests
             Name = "Quarto Premium",
             Level = 3,
             InMaintenance = true,
-            Price = new Domain.ValueObjects.Price()
+            Price = new Domain.Room.ValueObjects.Price()
             {
                 Value = 300,
                 Currency = AcceptedCurrencies.Bitcoin
@@ -167,7 +165,7 @@ public class RoomRepositoryTests
             Name = "Inexistente",
             Level = 2,
             InMaintenance = false,
-            Price = new Domain.ValueObjects.Price()
+            Price = new Domain.Room.ValueObjects.Price()
             {
                 Value = 200,
                 Currency = AcceptedCurrencies.Real

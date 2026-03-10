@@ -1,5 +1,7 @@
 ﻿using Data.MySql.Configuration;
-using Domain.Entities;
+using Domain.Book.Entities;
+using Domain.Guest.Entities;
+using Domain.Room.Entities;
 using Microsoft.EntityFrameworkCore;
 
 namespace Data.MySql;

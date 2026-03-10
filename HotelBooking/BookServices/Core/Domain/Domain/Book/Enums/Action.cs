@@ -1,4 +1,4 @@
-﻿namespace Domain.Enums;
+﻿namespace Domain.Book.Enums;
 
 public enum Action
 {

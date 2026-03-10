@@ -1,9 +1,9 @@
-﻿using Domain.Enums;
-using Domain.Exceptions;
-using Domain.Ports;
-using Domain.ValueObjects;
+﻿using Domain.Exceptions;
+using Domain.Room.Enums;
+using Domain.Room.Ports;
+using Domain.Room.ValueObjects;
 
-namespace Domain.Entities;
+namespace Domain.Room.Entities;
 
 public class Room
 {

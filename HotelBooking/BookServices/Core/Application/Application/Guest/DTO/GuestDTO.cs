@@ -1,4 +1,4 @@
-﻿using Domain.ValueObjects;
+﻿using Domain.Guest.ValueObjects;
 
 namespace Application.Guest.DTO;
 
@@ -10,9 +10,9 @@ public class GuestDTO
     public string IdNumber  { get; set; }
     public int IdTypeCode { get; set; }
 
-    public static Domain.Entities.Guest MapToEntity(GuestDTO guestDTO)
+    public static Domain.Guest.Entities.Guest MapToEntity(GuestDTO guestDTO)
     {
-        return new Domain.Entities.Guest
+        return new Domain.Guest.Entities.Guest
         {
             Id = guestDTO.Id,
             Name = guestDTO.Name,
@@ -25,7 +25,7 @@ public class GuestDTO
         };
     }
 
-    public static GuestDTO MapFromEntity(Domain.Entities.Guest guest)
+    public static GuestDTO MapFromEntity(Domain.Guest.Entities.Guest guest)
     {
         return new GuestDTO
         {

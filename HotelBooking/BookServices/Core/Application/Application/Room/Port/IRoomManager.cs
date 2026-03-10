@@ -1,18 +1,14 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Application.Room.DTO;
-using Domain.Entities;
+﻿using Application.Room.DTO;
+using Application.Room.Request;
+using Application.Room.Responses;
 
 namespace Application.Room.Port;
 
 public interface IRoomManager
 {
-    Task<RoomDTO> GetRoomByIdAsync(int id);
+    Task<RoomResponse> GetRoomByIdAsync(int id);
     Task<IEnumerable<RoomDTO>> GetAllRoomsAsync();
-    Task<int> AddRoomAsync(RoomDTO room);
+    Task<RoomResponse> AddRoomAsync(CreateRoomRequest room);
     Task<bool> UpdateRoomAsync(RoomDTO room);
     Task<bool> DeleteRoomAsync(int id);
 }
