@@ -3,6 +3,7 @@ using Application.Guest.DTO;
 using Application.Guest.Port;
 using Application.Guest.Request;
 using Application.Guest.Responses;
+using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
 
 namespace API.Controllers
@@ -18,6 +19,20 @@ namespace API.Controllers
         {
             _logger = logger;
             _guestPort = guestPort;
+        }
+
+        [HttpGet("{id}")]
+        public async Task<ActionResult<GuestDTO>> Get(int id)
+        {
+            var guest = await _guestPort.GetById(id);
+
+            if (guest.Success)
+                return Ok(guest.Data);
+
+            if (guest.ErrorCode == ErrorCodes.NOT_FOUND)
+                return NotFound(guest);
+
+            return StatusCode(StatusCodes.Status500InternalServerError, guest);
         }
 
         [HttpPost]

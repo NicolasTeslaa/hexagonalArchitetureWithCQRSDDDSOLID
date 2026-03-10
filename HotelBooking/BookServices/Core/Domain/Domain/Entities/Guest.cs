@@ -26,7 +26,7 @@ public class Guest
         if (!Utils.Utils.ValidateEmail(Email))
             throw new InvalidEmailException();
 
-        if (await repository.FindByEmail(Email))
+        if (await repository.FindByEmail(Email) is not null)
             throw new EmailAlreadyUseException();
     }
 

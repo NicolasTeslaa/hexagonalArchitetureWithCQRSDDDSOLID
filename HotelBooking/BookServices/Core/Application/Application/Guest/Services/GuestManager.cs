@@ -74,4 +74,35 @@ public class GuestManager : IGuestManager
             };
         }
     }
+
+    public async Task<GuestResponse> GetById(int id)
+    {
+        GuestResponse response = new GuestResponse();
+
+        try
+        {
+            Domain.Entities.Guest? guest = await _guestRepository.FindById(id);
+
+            if (guest is null)
+            {
+                response.Success = false;
+                response.ErrorCode = ErrorCodes.NOT_FOUND;
+                response.Message = "Guest not found.";
+            }
+            else
+            {
+                response.Success = true;
+                response.Data = GuestDTO.MapFromEntity(guest);
+            }
+
+            return response;
+        }
+        catch (Exception)
+        {
+            response.Success = false;
+            response.ErrorCode = ErrorCodes.UNEXPECTED_ERROR;
+            response.Message = "Not able to retrieve the guest data. Please try again later.";
+            return response;
+        }
+    }
 }

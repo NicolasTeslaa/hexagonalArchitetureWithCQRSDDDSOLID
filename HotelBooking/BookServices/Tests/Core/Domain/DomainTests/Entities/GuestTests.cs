@@ -38,7 +38,7 @@ namespace DomainTests.Entities
 
             _guestRepositoryMock
                 .Setup(r => r.FindByEmail(guest.Email))
-                .ReturnsAsync(false);
+                .ReturnsAsync((Guest?)null);
 
             _guestRepositoryMock
                 .Setup(r => r.AddGuestAsync(It.IsAny<Guest>()))
@@ -61,7 +61,7 @@ namespace DomainTests.Entities
 
             _guestRepositoryMock
                 .Setup(r => r.FindByEmail(guest.Email))
-                .ReturnsAsync(false);
+                .ReturnsAsync((Guest?)null);
 
             await guest.Save(_guestRepositoryMock.Object);
 
@@ -161,7 +161,12 @@ namespace DomainTests.Entities
 
             _guestRepositoryMock
                 .Setup(r => r.FindByEmail(guest.Email))
-                .ReturnsAsync(true);
+                .ReturnsAsync(new Guest
+                {
+                    Id = 99,
+                    Name = "Outro Guest",
+                    Email = guest.Email
+                });
 
             await Assert.ThrowsAsync<EmailAlreadyUseException>(() =>
                 guest.Save(_guestRepositoryMock.Object));

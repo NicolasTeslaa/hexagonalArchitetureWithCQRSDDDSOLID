@@ -9,5 +9,6 @@ public interface IGuestRepository
     Task<int> AddGuestAsync(Guest guest);
     Task<bool> UpdateGuestAsync(Guest guest);
     Task<bool> DeleteGuestAsync(int id);
-    Task<bool> FindByEmail(string email);
+    Task<Guest?> FindByEmail(string email);
+    Task<Guest?> FindById(int id);
 }

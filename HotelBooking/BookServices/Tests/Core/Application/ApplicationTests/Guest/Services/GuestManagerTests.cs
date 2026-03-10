@@ -33,7 +33,70 @@ namespace ApplicationTests.Guest.Services
                 }
             };
         }
+        [Fact]
+        public async Task GetById_Should_Return_Success_When_Guest_Exists()
+        {
+            var guest = new Domain.Entities.Guest
+            {
+                Id = 15,
+                Name = "Tesla Silva",
+                Email = "tesla@gmail.com",
+                DocumentId = new Domain.ValueObjects.PersonId
+                {
+                    IdNumber = "12345678901",
+                    Document = (Domain.ValueObjects.DocumentType)1
+                }
+            };
 
+            _guestRepositoryMock
+                .Setup(r => r.FindById(15))
+                .ReturnsAsync(guest);
+
+            GuestResponse response = await _guestManager.GetById(15);
+
+            Assert.True(response.Success);
+            Assert.NotNull(response.Data);
+            Assert.Equal(15, response.Data.Id);
+            Assert.Equal("Tesla Silva", response.Data.Name);
+            Assert.Equal("tesla@gmail.com", response.Data.Email);
+            Assert.Equal("12345678901", response.Data.IdNumber);
+            Assert.Equal(1, response.Data.IdTypeCode);
+
+            _guestRepositoryMock.Verify(r => r.FindById(15), Times.Once);
+        }
+
+        [Fact]
+        public async Task GetById_Should_Return_NotFound_When_Guest_Does_Not_Exist()
+        {
+            _guestRepositoryMock
+                .Setup(r => r.FindById(15))
+                .ReturnsAsync((Domain.Entities.Guest?)null);
+
+            GuestResponse response = await _guestManager.GetById(15);
+
+            Assert.False(response.Success);
+            Assert.Equal(ErrorCodes.NOT_FOUND, response.ErrorCode);
+            Assert.Equal("Guest not found.", response.Message);
+            Assert.Null(response.Data);
+
+            _guestRepositoryMock.Verify(r => r.FindById(15), Times.Once);
+        }
+
+        [Fact]
+        public async Task GetById_Should_Return_UnexpectedError_When_Repository_Throws_Exception()
+        {
+            _guestRepositoryMock
+                .Setup(r => r.FindById(15))
+                .ThrowsAsync(new Exception("database failure"));
+
+            GuestResponse response = await _guestManager.GetById(15);
+
+            Assert.False(response.Success);
+            Assert.Equal(ErrorCodes.UNEXPECTED_ERROR, response.ErrorCode);
+            Assert.Equal("Not able to retrieve the guest data. Please try again later.", response.Message);
+
+            _guestRepositoryMock.Verify(r => r.FindById(15), Times.Once);
+        }
         [Fact]
         public async Task CreateGuest_Should_Return_Success_When_Request_Is_Valid()
         {
@@ -41,7 +104,7 @@ namespace ApplicationTests.Guest.Services
 
             _guestRepositoryMock
                 .Setup(r => r.FindByEmail(request.Data.Email))
-                .ReturnsAsync(false);
+                .ReturnsAsync((Domain.Entities.Guest?)null);
 
             _guestRepositoryMock
                 .Setup(r => r.AddGuestAsync(It.IsAny<Domain.Entities.Guest>()))
@@ -66,7 +129,12 @@ namespace ApplicationTests.Guest.Services
 
             _guestRepositoryMock
                 .Setup(r => r.FindByEmail(request.Data.Email))
-                .ReturnsAsync(true);
+                .ReturnsAsync(new Domain.Entities.Guest
+                {
+                    Id = 99,
+                    Name = "Existing Guest",
+                    Email = request.Data.Email
+                });
 
             GuestResponse response = await _guestManager.CreateGuest(request);
 
