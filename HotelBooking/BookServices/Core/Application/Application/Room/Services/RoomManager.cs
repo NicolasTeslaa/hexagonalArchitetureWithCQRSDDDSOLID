@@ -1,37 +1,50 @@
 ﻿using Application.Room.DTO;
 using Application.Room.Port;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using Domain.Ports;
 
 namespace Application.Room.Services;
 
 public class RoomManager : IRoomManager
 {
-    public Task<int> AddRoomAsync(RoomDTO room)
+    private readonly IRoomRepository _roomRepository;
+    public RoomManager(IRoomRepository roomRepository) => _roomRepository = roomRepository;
+
+    public async Task<int> AddRoomAsync(RoomDTO room)
     {
-        throw new NotImplementedException();
+        var roomEntity = RoomDTO.MapToEntity(room);
+
+        await roomEntity.Save(_roomRepository);
+
+        return roomEntity.Id;
     }
 
-    public Task<bool> DeleteRoomAsync(int id)
+    public async Task<bool> DeleteRoomAsync(int id)
     {
-        throw new NotImplementedException();
+        return await _roomRepository.DeleteRoomAsync(id);
     }
 
-    public Task<IEnumerable<Domain.Entities.Room>> GetAllRoomsAsync()
+    public async Task<IEnumerable<RoomDTO>> GetAllRoomsAsync()
     {
-        throw new NotImplementedException();
+        var list = await _roomRepository.GetAllRoomsAsync();
+
+        return list.Select(r => RoomDTO.MapFromEntity(r));
     }
 
-    public Task<Domain.Entities.Room> GetRoomByIdAsync(int id)
+    public async Task<RoomDTO> GetRoomByIdAsync(int id)
     {
-        throw new NotImplementedException();
+        var roomEntity = _roomRepository.GetRoomByIdAsync(id);
+
+        RoomDTO roomDTO = RoomDTO.MapFromEntity(roomEntity.Result);
+
+        return roomDTO;
     }
 
-    public Task<bool> UpdateRoomAsync(RoomDTO room)
+    public async Task<bool> UpdateRoomAsync(RoomDTO room)
     {
-        throw new NotImplementedException();
+        var roomEntity = RoomDTO.MapToEntity(room);
+
+        await roomEntity.Save(_roomRepository);
+
+        return roomEntity.Id > 0 ? true : false;
     }
 }
