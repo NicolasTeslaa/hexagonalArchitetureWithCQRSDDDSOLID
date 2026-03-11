@@ -1,5 +1,6 @@
 ﻿using Domain.Book.Entities;
 using Domain.Book.Enums;
+using Domain.Book.Exceptions;
 using System.Reflection;
 using Action = Domain.Book.Enums.Action;
 
@@ -53,17 +54,17 @@ public class BookingTests
     [InlineData(Status.Refunded, Action.Finish)]
     [InlineData(Status.Refunded, Action.Refound)]
     [InlineData(Status.Refunded, Action.ReOpen)]
-    public void ChangeState_Nao_Deve_Alterar_Status_Quando_Transicao_For_Invalida(
+    public void ChangeState_Deve_Lancar_Excecao_Quando_Transicao_For_Invalida(
         Status statusInicial,
         Action acao)
     {
         // Arrange
         var booking = CriarBookingComStatus(statusInicial);
 
-        // Act
-        booking.ChangeState(acao);
+        // Act / Assert
+        var exception = Assert.Throws<InvalidBookingStateTransitionException>(() => booking.ChangeState(acao));
 
-        // Assert
+        Assert.NotNull(exception);
         Assert.Equal(statusInicial, booking.CurrentStatus);
     }
 
@@ -123,36 +124,34 @@ public class BookingTests
     }
 
     [Fact]
-    public void ChangeState_Apos_Finished_Nao_Deve_Alterar_Mais_O_Status()
+    public void ChangeState_Apos_Finished_Deve_Lancar_Excecao_Para_Qualquer_Nova_Acao()
     {
         // Arrange
         var booking = CriarBookingComStatus(Status.Paid);
         booking.ChangeState(Action.Finish);
 
-        // Act
-        booking.ChangeState(Action.Pay);
-        booking.ChangeState(Action.Cancel);
-        booking.ChangeState(Action.Refound);
-        booking.ChangeState(Action.ReOpen);
+        // Act / Assert
+        Assert.Throws<InvalidBookingStateTransitionException>(() => booking.ChangeState(Action.Pay));
+        Assert.Throws<InvalidBookingStateTransitionException>(() => booking.ChangeState(Action.Cancel));
+        Assert.Throws<InvalidBookingStateTransitionException>(() => booking.ChangeState(Action.Refound));
+        Assert.Throws<InvalidBookingStateTransitionException>(() => booking.ChangeState(Action.ReOpen));
 
-        // Assert
         Assert.Equal(Status.Finished, booking.CurrentStatus);
     }
 
     [Fact]
-    public void ChangeState_Apos_Refunded_Nao_Deve_Alterar_Mais_O_Status()
+    public void ChangeState_Apos_Refunded_Deve_Lancar_Excecao_Para_Qualquer_Nova_Acao()
     {
         // Arrange
         var booking = CriarBookingComStatus(Status.Paid);
         booking.ChangeState(Action.Refound);
 
-        // Act
-        booking.ChangeState(Action.Pay);
-        booking.ChangeState(Action.Cancel);
-        booking.ChangeState(Action.Finish);
-        booking.ChangeState(Action.ReOpen);
+        // Act / Assert
+        Assert.Throws<InvalidBookingStateTransitionException>(() => booking.ChangeState(Action.Pay));
+        Assert.Throws<InvalidBookingStateTransitionException>(() => booking.ChangeState(Action.Cancel));
+        Assert.Throws<InvalidBookingStateTransitionException>(() => booking.ChangeState(Action.Finish));
+        Assert.Throws<InvalidBookingStateTransitionException>(() => booking.ChangeState(Action.ReOpen));
 
-        // Assert
         Assert.Equal(Status.Refunded, booking.CurrentStatus);
     }
 
@@ -172,18 +171,17 @@ public class BookingTests
     }
 
     [Fact]
-    public void ChangeState_Quando_Acao_Invalida_For_Chamada_Mais_De_Uma_Vez_Deve_Manter_O_Status()
+    public void ChangeState_Quando_Acao_Invalida_For_Chamada_Mais_De_Uma_Vez_Deve_Lancar_Excecao_E_Manter_O_Status()
     {
         // Arrange
         var booking = CriarBookingComStatus(Status.Created);
 
-        // Act
-        booking.ChangeState(Action.Finish);
-        booking.ChangeState(Action.Finish);
-        booking.ChangeState(Action.Refound);
-        booking.ChangeState(Action.ReOpen);
+        // Act / Assert
+        Assert.Throws<InvalidBookingStateTransitionException>(() => booking.ChangeState(Action.Finish));
+        Assert.Throws<InvalidBookingStateTransitionException>(() => booking.ChangeState(Action.Finish));
+        Assert.Throws<InvalidBookingStateTransitionException>(() => booking.ChangeState(Action.Refound));
+        Assert.Throws<InvalidBookingStateTransitionException>(() => booking.ChangeState(Action.ReOpen));
 
-        // Assert
         Assert.Equal(Status.Created, booking.CurrentStatus);
     }
 
@@ -194,11 +192,11 @@ public class BookingTests
         var booking = CriarBookingComStatus(Status.Created);
 
         // Act
-        booking.ChangeState(Action.Finish);  // inválida
-        booking.ChangeState(Action.Pay);     // válida -> Paid
-        booking.ChangeState(Action.ReOpen);  // inválida
-        booking.ChangeState(Action.Finish);  // válida -> Finished
-        booking.ChangeState(Action.Cancel);  // inválida
+        Assert.Throws<InvalidBookingStateTransitionException>(() => booking.ChangeState(Action.Finish));
+        booking.ChangeState(Action.Pay);
+        Assert.Throws<InvalidBookingStateTransitionException>(() => booking.ChangeState(Action.ReOpen));
+        booking.ChangeState(Action.Finish);
+        Assert.Throws<InvalidBookingStateTransitionException>(() => booking.ChangeState(Action.Cancel));
 
         // Assert
         Assert.Equal(Status.Finished, booking.CurrentStatus);
@@ -211,12 +209,12 @@ public class BookingTests
         var booking = CriarBookingComStatus(Status.Created);
 
         // Act
-        booking.ChangeState(Action.Cancel);   // Canceled
-        booking.ChangeState(Action.ReOpen);   // Created
-        booking.ChangeState(Action.Pay);      // Paid
-        booking.ChangeState(Action.Refound);  // Refunded
-        booking.ChangeState(Action.ReOpen);   // inválida
-        booking.ChangeState(Action.Pay);      // inválida
+        booking.ChangeState(Action.Cancel);
+        booking.ChangeState(Action.ReOpen);
+        booking.ChangeState(Action.Pay);
+        booking.ChangeState(Action.Refound);
+        Assert.Throws<InvalidBookingStateTransitionException>(() => booking.ChangeState(Action.ReOpen));
+        Assert.Throws<InvalidBookingStateTransitionException>(() => booking.ChangeState(Action.Pay));
 
         // Assert
         Assert.Equal(Status.Refunded, booking.CurrentStatus);

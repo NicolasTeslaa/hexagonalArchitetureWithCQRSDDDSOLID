@@ -1,8 +1,11 @@
-﻿using Application.Guest.Port;
+﻿using Application.Book.Port;
+using Application.Book.Services;
+using Application.Guest.Port;
 using Application.Guest.Services;
 using Application.Room.Port;
 using Application.Room.Services;
 using Data.MySql.Repositories;
+using Domain.Book.Ports;
 using Domain.Guest.Ports;
 using Domain.Room.Ports;
 
@@ -17,6 +20,9 @@ public static class DependencyInjection
 
         services.AddScoped<IRoomManager, RoomManager>();
         services.AddScoped<IRoomRepository, RoomRepository>();
+
+        services.AddScoped<IBookManager, BookManager>();
+        services.AddScoped<IBookRepository, BookRepository>();
 
         return services;
     }

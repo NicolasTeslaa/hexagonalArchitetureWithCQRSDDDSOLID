@@ -1,4 +1,5 @@
-﻿using Domain.Room.ValueObjects;
+﻿using Domain.Book.Entities;
+using Domain.Room.ValueObjects;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -15,6 +16,8 @@ public class RoomDTO
     public bool InMaintenance { get; set; }
     public Price Price { get; set; }
     public bool IsAvaliable { get; set; }
+    public bool HasGuest { get; set; }
+    public ICollection<Booking> Bookings { get; set; }
 
     public static Domain.Room.Entities.Room MapToEntity(RoomDTO roomDTO)
     {
@@ -24,7 +27,7 @@ public class RoomDTO
             Name = roomDTO.Name,
             Level = roomDTO.Level,
             InMaintenance = roomDTO.InMaintenance,
-            Price = roomDTO.Price
+            Price = roomDTO.Price,
         };
     }
 
@@ -37,7 +40,9 @@ public class RoomDTO
             Level = room.Level,
             InMaintenance = room.InMaintenance,
             Price = room.Price,
-            IsAvaliable = room.IsAvaliable
+            IsAvaliable = room.IsAvaliable,
+            Bookings = room.Bookings,
+            HasGuest = room.HasGuest
         };
     }
 }

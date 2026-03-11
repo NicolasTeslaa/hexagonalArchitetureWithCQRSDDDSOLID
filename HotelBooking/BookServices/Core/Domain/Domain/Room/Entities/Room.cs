@@ -1,4 +1,5 @@
-﻿using Domain.Exceptions;
+﻿using Domain.Book.Entities;
+using Domain.Exceptions;
 using Domain.Room.Enums;
 using Domain.Room.Ports;
 using Domain.Room.ValueObjects;
@@ -12,19 +13,40 @@ public class Room
     public int Level { get; set; }
     public bool InMaintenance { get; set; }
     public Price Price { get; set; }
+    public ICollection<Booking> Bookings { get; set; }
     public bool IsAvaliable
     {
         get
         {
-            if (this.InMaintenance || this.HasGuest)
-            {
+            if (InMaintenance || HasGuest)
                 return false;
-            }
 
             return true;
         }
     }
-    public bool HasGuest { get { return true; } }
+
+    public bool HasGuest
+    {
+        get
+        {
+            if (Bookings is null || !Bookings.Any())
+                return false;
+
+            var now = DateTime.UtcNow;
+
+            var occupiedStatuses = new[]
+            {
+            Domain.Book.Enums.Status.Created,
+            Domain.Book.Enums.Status.Paid
+        };
+
+            return Bookings.Any(b =>
+                b.RoomId == Id &&
+                occupiedStatuses.Contains(b.CurrentStatus) &&
+                b.Start <= now &&
+                b.End >= now);
+        }
+    }
 
     private void Validate()
     {
@@ -32,7 +54,7 @@ public class Room
             Name.Trim().Length < 3 ||
             Name.Trim().Length > 100 ||
             Level <= 0 || Price == null ||
-            Price.Value <= 0 ||
+            Price.Value <= 10 ||
             !Enum.IsDefined(typeof(AcceptedCurrencies), Price.Currency))
             throw new MissingRequiredInformationException();
     }

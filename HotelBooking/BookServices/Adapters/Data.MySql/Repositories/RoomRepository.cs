@@ -32,9 +32,9 @@ public class RoomRepository : IRoomRepository
         return true;
     }
 
-    public async Task<IEnumerable<Room>> GetAllRoomsAsync() => await _context.Room.ToListAsync();
+    public async Task<IEnumerable<Room>> GetAllRoomsAsync() => await _context.Room.Include(x => x.Bookings).ToListAsync();
 
-    public async Task<Room?> GetRoomByIdAsync(int id) => await _context.Room.FindAsync(id);
+    public async Task<Room?> GetRoomByIdAsync(int id) => await _context.Room.Include(x => x.Bookings).Where(x=>x.Id == id).FirstOrDefaultAsync();
 
     public async Task<bool> UpdateRoomAsync(Room room)
     {
