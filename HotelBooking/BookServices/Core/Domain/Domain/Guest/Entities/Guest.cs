@@ -14,7 +14,7 @@ public class Guest
     public string Name { get; set; }
     public string Email { get; set; }
     [JsonIgnore]
-    public Collection<Booking> Books { get; set; }
+    public Collection<Booking> Bookings { get; set; }
     public PersonId DocumentId { get; set; }
 
     private async Task ValidateState(IGuestRepository repository)

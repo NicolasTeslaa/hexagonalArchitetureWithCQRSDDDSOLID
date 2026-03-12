@@ -34,4 +34,11 @@
     <File Path="ExemploMigration.txt" />
   </Folder>
   <Folder Name="/PaymentService/" />
+  <Folder Name="/PaymentService/Core/" />
+  <Folder Name="/PaymentService/Core/Application/">
+    <Project Path="PaymentServices/Core/Application/Application/Payment.Application.csproj" Id="df5ff97e-b25b-4b23-b4e6-fcbcae88f7ff" />
+  </Folder>
+  <Folder Name="/PaymentService/Tests/" />
+  <Folder Name="/PaymentService/Tests/Core/" />
+  <Folder Name="/PaymentService/Tests/Core/Application/" />
 </Solution>

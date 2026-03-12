@@ -11,10 +11,17 @@ public class Booking
     public DateTime PlacedAt { get; set; }
     public DateTime Start { get; set; }
     public DateTime End { get; set; }
-    private Status Status { get; set; }
+    public Status Status { get; private set; }
     public int RoomId { get; set; }
+    public Domain.Room.Entities.Room Room { get; set; }
     public int GuestId { get; set; }
+    public Domain.Guest.Entities.Guest Guest { get; set; }
+
     public Status CurrentStatus => this.Status;
+    public void SetStatus(Status status)
+    {
+        Status = status;
+    }
 
     private async Task ValidateState(IBookRepository repository)
     {
@@ -32,7 +39,7 @@ public class Booking
         if (Start < DateTime.UtcNow)
             throw new BookingInPastException();
 
-        if (!room.IsAvaliable)
+        if (!room.IsAvaliable && this.Id is 0)
             throw new RoomUnavailableException();
 
         var hasConflict = await repository.HasConflictAsync(room.Id, Start, End, Id is 0 ? null : Id);
@@ -45,23 +52,22 @@ public class Booking
     {
         await ValidateState(repository);
 
+        if (Id != 0)
+        {
+            await repository.UpdateBookAsync(this);
+            return;
+        }
+        
         if (PlacedAt == default)
             PlacedAt = DateTime.UtcNow;
 
-        if (Id == 0)
-        {
-            Status = Status.Created;
+        Status = Status.Created;
 
-            var book = await repository.CreateBookAsync(this);
+        var book = await repository.CreateBookAsync(this);
 
-            Id = book.Id;
-
-            return;
-        }
-
-        await repository.UpdateBookAsync(this);
+        Id = book.Id;
     }
-
+  
     public void ChangeState(Action action)
     {
         var newStatus = (Status, action) switch

@@ -1,10 +1,6 @@
 ﻿using Domain.Book.Entities;
 using Domain.Room.ValueObjects;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using System.Text.Json.Serialization;
 
 namespace Application.Room.DTO;
 
@@ -17,8 +13,6 @@ public class RoomDTO
     public Price Price { get; set; }
     public bool IsAvaliable { get; set; }
     public bool HasGuest { get; set; }
-    public ICollection<Booking> Bookings { get; set; }
-
     public static Domain.Room.Entities.Room MapToEntity(RoomDTO roomDTO)
     {
         return new Domain.Room.Entities.Room
@@ -41,7 +35,6 @@ public class RoomDTO
             InMaintenance = room.InMaintenance,
             Price = room.Price,
             IsAvaliable = room.IsAvaliable,
-            Bookings = room.Bookings,
             HasGuest = room.HasGuest
         };
     }

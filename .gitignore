@@ -23,3 +23,6 @@
 /HotelBooking/BookServices/Core/Domain/Domain/bin
 /HotelBooking/BookServices/Core/Domain/Domain/bin
 /HotelBooking/BookServices/Core/Shared/Utils/bin
+/HotelBooking/PaymentServices/Core/Application/Application/obj
+/HotelBooking/PaymentServices/Core/Application/Application/bin
+/HotelBooking/BookServices/Core/Domain/Domain/bin

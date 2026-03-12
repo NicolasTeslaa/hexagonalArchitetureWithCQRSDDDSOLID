@@ -71,6 +71,7 @@ public class BookRepository : IBookRepository
         existingBook.End = book.End;
         existingBook.RoomId = book.RoomId;
         existingBook.GuestId = book.GuestId;
+        existingBook.SetStatus(book.CurrentStatus);
 
         _context.Book.Update(existingBook);
 

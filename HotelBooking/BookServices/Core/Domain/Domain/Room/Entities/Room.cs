@@ -13,7 +13,7 @@ public class Room
     public int Level { get; set; }
     public bool InMaintenance { get; set; }
     public Price Price { get; set; }
-    public ICollection<Booking> Bookings { get; set; }
+    public ICollection<Booking>? Bookings { get; set; }
     public bool IsAvaliable
     {
         get

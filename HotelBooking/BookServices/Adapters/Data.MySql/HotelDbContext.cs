@@ -18,5 +18,6 @@ public class HotelDbContext : DbContext
     {
         modelBuilder.ApplyConfiguration(new GuestConfiguration());
         modelBuilder.ApplyConfiguration(new RoomConfiguration());
+        modelBuilder.ApplyConfiguration(new BookingConfiguration());
     }
 }

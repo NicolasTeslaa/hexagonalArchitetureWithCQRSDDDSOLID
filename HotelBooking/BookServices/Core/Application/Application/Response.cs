@@ -16,7 +16,10 @@ public enum ErrorCodes
     BOOKING_IN_PAST = 9,
     ROOM_UNAVAILABLE = 10,
     BOOKING_CONFLICT = 11,
-    INVALID_BOOKING_STATE_TRANSITION = 12
+    INVALID_BOOKING_STATE_TRANSITION = 12,
+
+    // Payments
+    PAYMENT_PROVIDER_NOT_IMPLEMENTED = 13,
 }
 
 public abstract class Response
