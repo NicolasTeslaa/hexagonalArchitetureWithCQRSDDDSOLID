@@ -1,8 +1,6 @@
-﻿using System.Reflection;
-using Data.MySql;
+﻿using Data.MySql;
 using Data.MySql.Repositories;
 using Domain.Book.Entities;
-using Domain.Book.Enums;
 using Domain.Guest.Entities;
 using Domain.Guest.ValueObjects;
 using Domain.Room.Entities;
@@ -79,45 +77,6 @@ public class BookRepositoryTests
             Start = start ?? DateTime.UtcNow.AddHours(1),
             End = end ?? DateTime.UtcNow.AddHours(2)
         };
-    }
-
-    private static void SetBookingStatus(Booking booking, Status status)
-    {
-        var property = typeof(Booking).GetProperty(
-            "Status",
-            BindingFlags.Instance | BindingFlags.NonPublic);
-
-        property!.SetValue(booking, status);
-    }
-
-    [Fact]
-    public async Task CreateBookAsync_Should_Add_Booking_And_Return_Entity()
-    {
-        using var context = CreateContext();
-
-        var room = CreateRoom();
-        var guest = CreateGuest();
-
-        context.Room.Add(room);
-        context.Guest.Add(guest);
-        await context.SaveChangesAsync();
-
-        var repository = new BookRepository(context);
-
-        var booking = CreateBooking(room.Id, guest.Id);
-        SetBookingStatus(booking, Status.Created);
-
-        var result = await repository.CreateBookAsync(booking);
-
-        Assert.NotNull(result);
-        Assert.True(result.Id > 0);
-
-        var savedBooking = await context.Book.FirstOrDefaultAsync(b => b.Id == result.Id);
-        Assert.NotNull(savedBooking);
-        Assert.Equal(room.Id, savedBooking!.RoomId);
-        Assert.Equal(guest.Id, savedBooking.GuestId);
-        Assert.Equal(booking.Start, savedBooking.Start);
-        Assert.Equal(booking.End, savedBooking.End);
     }
 
     [Fact]

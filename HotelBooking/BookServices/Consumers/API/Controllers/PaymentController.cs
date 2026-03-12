@@ -1,7 +1,5 @@
 ﻿using Application.Book.Port;
-using Application.Payment.Ports;
 using Application.Payment.Requests;
-using Domain.Payment.Enums;
 using Microsoft.AspNetCore.Mvc;
 
 namespace API.Controllers;

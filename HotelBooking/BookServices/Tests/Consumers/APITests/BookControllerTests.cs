@@ -1,8 +1,10 @@
 ﻿using API.Controllers;
 using Application;
+using Application.Book.Commands;
 using Application.Book.DTO;
 using Application.Book.Port;
 using Application.Book.Responses;
+using MediatR;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
@@ -14,13 +16,19 @@ public class BookControllerTests
 {
     private readonly Mock<IBookManager> _serviceMock;
     private readonly Mock<ILogger<BookController>> _loggerMock;
+    private readonly Mock<IMediator> _mediatorMock;
     private readonly BookController _controller;
 
     public BookControllerTests()
     {
         _serviceMock = new Mock<IBookManager>();
         _loggerMock = new Mock<ILogger<BookController>>();
-        _controller = new BookController(_serviceMock.Object, _loggerMock.Object);
+        _mediatorMock = new Mock<IMediator>();
+
+        _controller = new BookController(
+            _serviceMock.Object,
+            _loggerMock.Object,
+            _mediatorMock.Object);
     }
 
     private static BookDTO CreateBookDto()
@@ -37,12 +45,14 @@ public class BookControllerTests
     }
 
     [Fact]
-    public async Task GetBookById_Should_Return_Ok_When_Service_Returns_Success()
+    public async Task GetBookById_Should_Return_Ok_When_Mediator_Returns_Success()
     {
         var dto = CreateBookDto();
 
-        _serviceMock
-            .Setup(s => s.GetById(1))
+        _mediatorMock
+            .Setup(m => m.Send(
+                It.Is<GetBookingQuery>(q => q.Id == 1),
+                It.IsAny<CancellationToken>()))
             .ReturnsAsync(new BookResponse
             {
                 Success = true,
@@ -57,10 +67,12 @@ public class BookControllerTests
     }
 
     [Fact]
-    public async Task GetBookById_Should_Return_NotFound_When_Service_Returns_NotFound()
+    public async Task GetBookById_Should_Return_NotFound_When_Mediator_Returns_NotFound()
     {
-        _serviceMock
-            .Setup(s => s.GetById(1))
+        _mediatorMock
+            .Setup(m => m.Send(
+                It.Is<GetBookingQuery>(q => q.Id == 1),
+                It.IsAny<CancellationToken>()))
             .ReturnsAsync(new BookResponse
             {
                 Success = false,
@@ -77,10 +89,12 @@ public class BookControllerTests
     }
 
     [Fact]
-    public async Task GetBookById_Should_Return_InternalServerError_When_Service_Returns_Unexpected_Error()
+    public async Task GetBookById_Should_Return_InternalServerError_When_Mediator_Returns_Unexpected_Error()
     {
-        _serviceMock
-            .Setup(s => s.GetById(1))
+        _mediatorMock
+            .Setup(m => m.Send(
+                It.Is<GetBookingQuery>(q => q.Id == 1),
+                It.IsAny<CancellationToken>()))
             .ReturnsAsync(new BookResponse
             {
                 Success = false,
@@ -99,27 +113,30 @@ public class BookControllerTests
     }
 
     [Fact]
-    public async Task GetBookById_Should_Return_InternalServerError_When_Service_Throws_Exception()
+    public async Task GetBookById_Should_Return_InternalServerError_When_Mediator_Throws_Exception()
     {
-        _serviceMock
-            .Setup(s => s.GetById(1))
+        _mediatorMock
+            .Setup(m => m.Send(
+                It.Is<GetBookingQuery>(q => q.Id == 1),
+                It.IsAny<CancellationToken>()))
             .ThrowsAsync(new Exception("erro"));
 
         var result = await _controller.GetBookById(1);
 
         var objectResult = Assert.IsType<ObjectResult>(result);
         Assert.Equal(StatusCodes.Status500InternalServerError, objectResult.StatusCode);
-
         Assert.NotNull(objectResult.Value);
     }
 
     [Fact]
-    public async Task CreateBook_Should_Return_Ok_When_Service_Returns_Success()
+    public async Task CreateBook_Should_Return_Ok_When_Mediator_Returns_Success()
     {
         var dto = CreateBookDto();
 
-        _serviceMock
-            .Setup(s => s.CreateBookAsync(dto))
+        _mediatorMock
+            .Setup(m => m.Send(
+                It.Is<CreateBookingCommand>(c => c.BookingDTO == dto),
+                It.IsAny<CancellationToken>()))
             .ReturnsAsync(new BookResponse
             {
                 Success = true,
@@ -142,8 +159,10 @@ public class BookControllerTests
     {
         var dto = CreateBookDto();
 
-        _serviceMock
-            .Setup(s => s.CreateBookAsync(dto))
+        _mediatorMock
+            .Setup(m => m.Send(
+                It.Is<CreateBookingCommand>(c => c.BookingDTO == dto),
+                It.IsAny<CancellationToken>()))
             .ReturnsAsync(new BookResponse
             {
                 Success = false,
@@ -166,8 +185,10 @@ public class BookControllerTests
     {
         var dto = CreateBookDto();
 
-        _serviceMock
-            .Setup(s => s.CreateBookAsync(dto))
+        _mediatorMock
+            .Setup(m => m.Send(
+                It.Is<CreateBookingCommand>(c => c.BookingDTO == dto),
+                It.IsAny<CancellationToken>()))
             .ReturnsAsync(new BookResponse
             {
                 Success = false,
@@ -184,12 +205,14 @@ public class BookControllerTests
     }
 
     [Fact]
-    public async Task CreateBook_Should_Return_NotFound_When_Service_Returns_NotFound()
+    public async Task CreateBook_Should_Return_NotFound_When_Mediator_Returns_NotFound()
     {
         var dto = CreateBookDto();
 
-        _serviceMock
-            .Setup(s => s.CreateBookAsync(dto))
+        _mediatorMock
+            .Setup(m => m.Send(
+                It.Is<CreateBookingCommand>(c => c.BookingDTO == dto),
+                It.IsAny<CancellationToken>()))
             .ReturnsAsync(new BookResponse
             {
                 Success = false,
@@ -206,12 +229,14 @@ public class BookControllerTests
     }
 
     [Fact]
-    public async Task CreateBook_Should_Return_InternalServerError_When_Service_Returns_Unexpected_Error()
+    public async Task CreateBook_Should_Return_InternalServerError_When_Mediator_Returns_Unexpected_Error()
     {
         var dto = CreateBookDto();
 
-        _serviceMock
-            .Setup(s => s.CreateBookAsync(dto))
+        _mediatorMock
+            .Setup(m => m.Send(
+                It.Is<CreateBookingCommand>(c => c.BookingDTO == dto),
+                It.IsAny<CancellationToken>()))
             .ReturnsAsync(new BookResponse
             {
                 Success = false,
@@ -230,19 +255,20 @@ public class BookControllerTests
     }
 
     [Fact]
-    public async Task CreateBook_Should_Return_InternalServerError_When_Service_Throws_Exception()
+    public async Task CreateBook_Should_Return_InternalServerError_When_Mediator_Throws_Exception()
     {
         var dto = CreateBookDto();
 
-        _serviceMock
-            .Setup(s => s.CreateBookAsync(dto))
+        _mediatorMock
+            .Setup(m => m.Send(
+                It.Is<CreateBookingCommand>(c => c.BookingDTO == dto),
+                It.IsAny<CancellationToken>()))
             .ThrowsAsync(new Exception("erro"));
 
         var result = await _controller.CreateBook(dto);
 
         var objectResult = Assert.IsType<ObjectResult>(result);
         Assert.Equal(StatusCodes.Status500InternalServerError, objectResult.StatusCode);
-
         Assert.NotNull(objectResult.Value);
     }
 }

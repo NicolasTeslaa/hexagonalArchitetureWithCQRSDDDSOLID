@@ -20,6 +20,7 @@ public enum ErrorCodes
 
     // Payments
     PAYMENT_PROVIDER_NOT_IMPLEMENTED = 13,
+    INVALID_PAYMENT = 14,
 }
 
 public abstract class Response

@@ -1,5 +1,4 @@
-﻿using System.Reflection;
-using Domain.Book.Entities;
+﻿using Domain.Book.Entities;
 using Domain.Book.Enums;
 using Domain.Exceptions;
 using Domain.Room.Entities;
@@ -46,18 +45,9 @@ public class RoomTests
             End = end
         };
 
-        SetBookingStatus(booking, status);
+        booking.SetStatus(status);
 
         return booking;
-    }
-
-    private void SetBookingStatus(Booking booking, Status status)
-    {
-        var property = typeof(Booking).GetProperty(
-            "Status",
-            BindingFlags.Instance | BindingFlags.NonPublic);
-
-        property!.SetValue(booking, status);
     }
 
     [Fact]
