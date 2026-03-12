@@ -8,7 +8,6 @@ namespace Application.Book.Port;
 
 public interface IBookManager
 {
-    Task<BookResponse> CreateBookAsync (BookDTO book);
     Task<BookResponse> GetById(int id);
     Task<PaymentResponse> PayForAbooking(PaymentRequest request);
 }

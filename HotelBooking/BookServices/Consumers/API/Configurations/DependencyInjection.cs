@@ -1,4 +1,5 @@
-﻿using Application.Book.Port;
+﻿using Application.Book.Commands;
+using Application.Book.Port;
 using Application.Book.Services;
 using Application.Guest.Port;
 using Application.Guest.Services;
@@ -13,6 +14,7 @@ using Data.MySql.Repositories;
 using Domain.Book.Ports;
 using Domain.Guest.Ports;
 using Domain.Room.Ports;
+using MediatR;
 using Payment.Application.Factory;
 
 namespace API.Configurations;
@@ -35,6 +37,9 @@ public static class DependencyInjection
         services.AddScoped<IPaymentProcessor, PaypalAdapter>();
 
         services.AddScoped<IPaymentProcessorFactory, PaymentProcessorFactory>();
+
+        services.AddMediatR(cfg =>
+            cfg.RegisterServicesFromAssembly(typeof(CreateBookingHandler).Assembly));
 
         return services;
     }

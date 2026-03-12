@@ -1,7 +1,9 @@
 ﻿using Application;
+using Application.Book.Commands;
 using Application.Book.DTO;
 using Application.Book.Port;
 using Application.Book.Request;
+using MediatR;
 using Microsoft.AspNetCore.Mvc;
 
 namespace API.Controllers;
@@ -12,11 +14,12 @@ public class BookController : ControllerBase
 {
     private readonly IBookManager _service;
     private readonly ILogger<BookController> _logger;
-
-    public BookController(IBookManager service, ILogger<BookController> logger)
+    private readonly IMediator _mediator;
+    public BookController(IBookManager service, ILogger<BookController> logger, IMediator mediator)
     {
         _service = service;
         _logger = logger;
+        _mediator = mediator;
     }
 
     [HttpGet("{id}")]
@@ -52,7 +55,12 @@ public class BookController : ControllerBase
     {
         try
         {
-            var response = await _service.CreateBookAsync(request);
+            var command = new CreateBookingCommand
+            {
+                BookingDTO = request
+            };
+
+            var response = await _mediator.Send(command);
 
             if (response.Success)
                 return Ok(response.Data);
