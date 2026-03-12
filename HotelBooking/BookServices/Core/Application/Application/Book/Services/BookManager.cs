@@ -22,28 +22,6 @@ public class BookManager : IBookManager
         _paymentProcessorFactory = paymentProcessorFactory;
     }
 
-
-    public async Task<BookResponse> GetById(int id)
-    {
-        var book = await _bookRepository.GetBookByIdAsync(id);
-
-        if (book is not null)
-        {
-            return new BookResponse
-            {
-                Success = true,
-                Data = BookDTO.MapFromEntity(book)
-            };
-        }
-
-        return new BookResponse
-        {
-            Success = false,
-            ErrorCode = ErrorCodes.NOT_FOUND,
-            Message = "Book not found."
-        };
-    }
-
     public async Task<PaymentResponse> PayForAbooking(PaymentRequest request)
     {
         IPaymentProcessor paymentProcessor = _paymentProcessorFactory.GetPaymentProcessor(request.SelectPaymentProvider);

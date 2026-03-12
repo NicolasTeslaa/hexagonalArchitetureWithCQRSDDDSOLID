@@ -27,7 +27,12 @@ public class BookController : ControllerBase
     {
         try
         {
-            var response = await _service.GetById(id);
+            var command = new GetBookingQuery
+            {
+                Id = id
+            };
+
+            var response = await _mediator.Send(command);
 
             if (response.Success)
                 return Ok(response.Data);
